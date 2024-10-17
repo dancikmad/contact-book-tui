@@ -4,6 +4,7 @@ from textual.screen import Screen
 from textual.widgets import Footer, Header, Button, Label
 
 class ContactsApp(App):
+    CSS_PATH = "rpcontacts.tcss"
     BINDINGS = [
         ("m", "toggle_dark", "Toggle dark mode")
     ]
@@ -49,5 +50,3 @@ class QuestionDialog(Screen):
                 self.dismiss(True)
             else:
                 self.dismiss(False)
-
-        
