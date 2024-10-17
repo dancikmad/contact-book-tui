@@ -6,7 +6,8 @@ from textual.widgets import Footer, Header, Button, Label
 class ContactsApp(App):
     CSS_PATH = "rpcontacts.tcss"
     BINDINGS = [
-        ("m", "toggle_dark", "Toggle dark mode")
+        ("m", "toggle_dark", "Toggle dark mode"),
+        ("q", "request_quit", "Quit"),
     ]
     def compose(self):
         """
@@ -28,6 +29,18 @@ class ContactsApp(App):
         """
         self.dark = not self.dark
 
+    def action_request_quit(self):
+        """
+        Method that takes a screen instance as its first argument. The second
+        argument should be the funtion object that will process the dialog's response
+        which is `check_answer()`
+        """
+        def check_answer(accepted):
+            if accepted:
+                self.exit()
+
+        self.push_screen(QuestionDialog("Do you want to quit?"), check_answer)
+
 
 class QuestionDialog(Screen):
     def __init__(self, message, *args, **kwargs):
@@ -45,8 +58,8 @@ class QuestionDialog(Screen):
             id="question-dialog",
         )
 
-        def on_button_pressed(self, event):
-            if event.button.id == "yes":
-                self.dismiss(True)
-            else:
-                self.dismiss(False)
+    def on_button_pressed(self, event):
+        if event.button.id == "yes":
+            self.dismiss(True)
+        else:
+            self.dismiss(False)
