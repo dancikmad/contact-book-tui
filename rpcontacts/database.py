@@ -3,6 +3,7 @@ import sqlite3
 
 DATABASE_PATH = pathlib.Path().home() / "contacts.db"
 
+
 class Database:
     def __init__(self, db_path=DATABASE_PATH):
         self.db = sqlite3.connect(db_path)
@@ -30,16 +31,11 @@ class Database:
         return result.fetchall()
 
     def get_last_contact(self):
-        result = self._run_query(
-            "SELECT * FROM contacts ORDER BY id DESC LIMIT 1;"
-        )
+        result = self._run_query("SELECT * FROM contacts ORDER BY id DESC LIMIT 1;")
         return result.fetchone()
 
     def add_contact(self, contact):
-        self._run_query(
-            "INSERT INTO contacts VALUES (NULL, ?, ?, ?);",
-            *contact
-        )
+        self._run_query("INSERT INTO contacts VALUES (NULL, ?, ?, ?);", *contact)
 
     def delete_contact(self, id):
         self._run_query(

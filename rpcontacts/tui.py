@@ -1,8 +1,8 @@
 from textual.app import App, on
 from textual.containers import Grid, Horizontal, Vertical
 from textual.screen import Screen
-from textual.widgets import Footer, Header, Button, Label, DataTable, \
-    Static, Input
+from textual.widgets import Footer, Header, Button, Label, DataTable, Static, Input
+
 
 class ContactsApp(App):
     CSS_PATH = "rpcontacts.tcss"
@@ -36,7 +36,7 @@ class ContactsApp(App):
             Button("Delete", variant="warning", id="delete"),
             Static(classes="separator"),
             Button("Clear All", variant="error", id="clear"),
-            classes="buttons_panel"
+            classes="buttons_panel",
         )
         yield Horizontal(contacts_list, buttons_panel)
         yield Footer()
@@ -78,14 +78,14 @@ class ContactsApp(App):
 
         self.push_screen(
             QuestionDialog("Are you sure you want to remove all contacts?"),
-            check_answer
+            check_answer,
         )
 
     def on_mount(self):
         """
         Method to set up some properties of the main screen, like title and subtitle
         """
-        self.title = 'RP Contacts'
+        self.title = "RP Contacts"
         self.sub_title = "A Contacts Book App with Textual & Python"
         self._load_contacts()
 
@@ -94,8 +94,6 @@ class ContactsApp(App):
         for contact_data in self.db.get_all_contacts():
             id, *contact = contact_data
             contacts_list.add_row(*contact, key=id)
-
-
 
     def action_toggle_dark(self):
         """
@@ -109,6 +107,7 @@ class ContactsApp(App):
         argument should be the funtion object that will process the dialog's response
         which is `check_answer()`
         """
+
         def check_answer(accepted):
             if accepted:
                 self.exit()
@@ -162,9 +161,9 @@ class InputDialog(Screen):
                 id="email",
             ),
             Static(),
-            Button("Cancel", variant='warning', id='cancel'),
-            Button("Ok", variant='success', id='ok'),
-            id='input-dialog',
+            Button("Cancel", variant="warning", id="cancel"),
+            Button("Ok", variant="success", id="ok"),
+            id="input-dialog",
         )
 
     def on_button_pressed(self, event):
