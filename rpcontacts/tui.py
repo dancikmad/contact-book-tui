@@ -1,8 +1,8 @@
-from textual.app import App
+from textual.app import App, on
 from textual.containers import Grid, Horizontal, Vertical
 from textual.screen import Screen
 from textual.widgets import Footer, Header, Button, Label, DataTable, \
-    Static
+    Static, Input
 
 class ContactsApp(App):
     CSS_PATH = "rpcontacts.tcss"
@@ -40,6 +40,16 @@ class ContactsApp(App):
         )
         yield Horizontal(contacts_list, buttons_panel)
         yield Footer()
+
+    @on(Button.Pressed, "#add")
+    def action_add(self):
+        def check_contact(contact_data):
+            if contact_data:
+                self.db.add_contact(contact_data)
+                id, *contact = self.db.get_last_contact()
+                self.query_one(DataTable).add_row(*contact, key=id)
+
+        self.push_screen(InputDialog(), check_contact)
 
     def on_mount(self):
         """
@@ -97,3 +107,42 @@ class QuestionDialog(Screen):
             self.dismiss(True)
         else:
             self.dismiss(False)
+
+
+class InputDialog(Screen):
+    def compose(self):
+        yield Grid(
+            Label("Add Contact", id="title"),
+            Label("Name:", classes="label"),
+            Input(
+                placeholder="Contact Name",
+                classes="input",
+                id="name",
+            ),
+            Label("Phone:", classes="label"),
+            Input(
+                placeholder="Contact Phone",
+                classes="input",
+                id="phone",
+            ),
+            Label("Email:", classes="label"),
+            Input(
+                placeholder="Contact Email",
+                classes="input",
+                id="email",
+            ),
+            Static(),
+            Button("Cancel", variant='warning', id='cancel'),
+            Button("Ok", variant='success', id='ok'),
+            id='input-dialog',
+        )
+
+    def on_button_pressed(self, event):
+        if event.button.id == "ok":
+            name = self.query_one("#name", Input).value
+            phone = self.query_one("#phone", Input).value
+            email = self.query_one("#email", Input).value
+            self.dismiss((name, phone, email))
+
+        else:
+            self.dismiss(())
